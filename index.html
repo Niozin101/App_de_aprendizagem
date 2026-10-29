@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Caderno de Estudos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Orbitron:wght@600;700;800&display=swap">
+<style>
+/* Layout: a single narrow column; tabs pinned on top. Palette and type follow the NMAKER site (warm black, orange gradient, Orbitron titles) */
+:root{
+  --paper:#0d0b09; --sheet:#15110d; --ink:#f4efe6; --muted:#b5aa9b; --line:rgba(255,122,26,.18);
+  --accent:#ff7a1a; --accent-light:#ffa24d; --accent-dark:#b8460f; --on-accent:#1a0d04;
+  --grad:linear-gradient(135deg,var(--accent-light),var(--accent) 50%,var(--accent-dark));
+  --accent-soft:rgba(255,122,26,.12); --mark:rgba(255,162,77,.32);
+  --good:#34d399; --bad:#f87171; --good-soft:rgba(52,211,153,.14); --bad-soft:rgba(248,113,113,.14);
+  --display:"Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --title:"Orbitron", "Segoe UI", system-ui, sans-serif;
+  --read:"Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, Consolas, monospace;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){
+  --paper:#f6f1ea; --sheet:#fffaf4; --ink:#1f1711; --muted:#64554a; --line:rgba(184,70,15,.2);
+  --accent:#e0620c; --accent-light:#ff8a33; --accent-dark:#9a3a0c; --accent-soft:rgba(224,98,12,.1); --mark:rgba(255,138,51,.3);
+  --good:#15803d; --bad:#b91c1c; --good-soft:rgba(21,128,61,.1); --bad-soft:rgba(185,28,28,.09); color-scheme:light}}
+:root[data-theme="light"]{
+  --paper:#f6f1ea; --sheet:#fffaf4; --ink:#1f1711; --muted:#64554a; --line:rgba(184,70,15,.2);
+  --accent:#e0620c; --accent-light:#ff8a33; --accent-dark:#9a3a0c; --accent-soft:rgba(224,98,12,.1); --mark:rgba(255,138,51,.3);
+  --good:#15803d; --bad:#b91c1c; --good-soft:rgba(21,128,61,.1); --bad-soft:rgba(185,28,28,.09); color-scheme:light}
+*{box-sizing:border-box}
+body{margin:0}
+[hidden]{display:none!important}
+body{background:var(--paper);color:var(--ink);font-family:var(--display);font-size:15px;line-height:1.5}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--paper)}
+.wrap{max-width:760px;margin:0 auto;padding-block:20px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.top{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+h1{font:800 1.6rem var(--title);letter-spacing:.06em;margin:0;text-wrap:balance}
+h1 span{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.today{font-family:var(--mono);font-size:.8rem;color:var(--muted)}
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);display:flex;gap:6px;margin:16px 0 22px;padding:8px 0;border-bottom:1px solid var(--line)}
+nav.tabs button{flex:1;font:600 .95rem var(--display);padding:10px 8px;border:1px solid transparent;border-radius:10px;background:none;color:var(--muted);cursor:pointer}
+nav.tabs button[aria-selected="true"]{background:var(--sheet);color:var(--ink);border-color:var(--line)}
+nav.tabs button:focus-visible,button:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.eyebrow{font:600 .72rem var(--mono);text-transform:uppercase;letter-spacing:.12em;color:var(--accent);margin:0 0 6px}
+h2{font:700 1.2rem var(--title);letter-spacing:.03em;margin:0 0 6px;text-wrap:balance}
+.hint{color:var(--muted);font-size:.88rem;margin:0 0 16px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px}
+.chip{font:600 .85rem var(--display);padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--sheet);color:var(--ink);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--grad);color:var(--on-accent);border-color:transparent}
+.chip small{font-weight:400;opacity:.75;margin-left:4px}
+article.text{background:var(--sheet);border:1px solid var(--line);border-radius:14px;padding:22px 22px 18px}
+article.text .level{font-family:var(--mono);font-size:.72rem;color:var(--accent);background:var(--accent-soft);padding:2px 8px;border-radius:6px}
+article.text h3{font:700 1.2rem/1.3 var(--title);letter-spacing:.02em;margin:12px 0 14px}
+.passage{font-family:var(--read);font-size:1.08rem;line-height:1.8;max-width:65ch}
+.s{cursor:pointer;border-radius:4px;padding:1px 0;transition:background .15s}
+.s:hover{background:var(--accent-soft)}
+.s.on{background:var(--mark)}
+.tr{display:block;font-family:var(--display);font-size:.92rem;line-height:1.45;color:var(--ink);background:var(--accent-soft);border-left:3px solid var(--accent);padding:8px 12px;margin:6px 0 10px;border-radius:0 8px 8px 0}
+.tr b{font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);display:block}
+.quiz{margin-top:26px;display:grid;gap:14px}
+.q{background:var(--sheet);border:1px solid var(--line);border-radius:12px;padding:16px}
+.q p{margin:0 0 10px;font-weight:600}
+.q .n{font-family:var(--mono);color:var(--muted);font-weight:400;margin-right:6px}
+.opts{display:grid;gap:6px}
+.opt{text-align:left;font:400 .95rem var(--display);padding:9px 12px;border-radius:9px;border:1px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt:disabled{cursor:default}
+.opt.right{background:var(--good-soft);border-color:var(--good);color:var(--ink)}
+.opt.wrong{background:var(--bad-soft);border-color:var(--bad);color:var(--ink)}
+.explain{font-size:.86rem;color:var(--muted);margin-top:8px}
+.score{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;background:var(--sheet);border:1px dashed var(--line);border-radius:12px;padding:12px 16px;font-weight:600}
+.score .num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.btn{font:700 .92rem var(--display);padding:10px 18px;border-radius:10px;border:1px solid transparent;background:var(--grad);color:var(--on-accent);cursor:pointer;box-shadow:0 0 18px rgba(255,122,26,.25)}
+.btn.ghost{background:transparent;color:var(--accent);border-color:var(--accent);box-shadow:none}
+.btn:disabled{opacity:.45;cursor:default}
+/* Study timer */
+.clock{background:var(--sheet);border:1px solid var(--line);border-radius:16px;padding:28px 20px;text-align:center}
+.ring{position:relative;width:min(260px,70vw);aspect-ratio:1;max-width:100%;margin:0 auto 18px}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring .time{position:absolute;inset:0;display:grid;place-items:center;font:600 clamp(2.2rem,9vw,3.2rem) var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-.03em}
+.ring .time small{display:block;font:400 .78rem var(--display);color:var(--muted);letter-spacing:0;margin-top:-6px}
+.controls{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.status{margin-top:14px;font-size:.9rem;color:var(--muted)}
+.status.done{color:var(--good);font-weight:600}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}
+.stat{background:var(--sheet);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.stat b{display:block;font:600 1.6rem var(--mono);font-variant-numeric:tabular-nums}
+.stat span{font-size:.78rem;color:var(--muted)}
+.cal{background:var(--sheet);border:1px solid var(--line);border-radius:14px;padding:16px}
+.calhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.calhead strong{text-transform:capitalize}
+.calhead button{background:none;border:1px solid var(--line);color:var(--ink);border-radius:8px;width:34px;height:34px;cursor:pointer;font-size:1rem}
+.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.grid .dow{font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);text-align:center;padding:4px 0}
+.day{aspect-ratio:1;display:grid;place-items:center;border-radius:8px;font:400 .85rem var(--mono);color:var(--muted);background:var(--paper)}
+.day.ok{background:var(--grad);color:var(--on-accent);font-weight:600}
+.day.miss{background:var(--bad-soft);color:var(--bad)}
+.day.is-today{outline:2px solid var(--accent);outline-offset:-2px;color:var(--ink)}
+.day.empty{background:none}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.78rem;color:var(--muted);margin-top:12px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+/* Dev */
+.devbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
+pre.code{background:var(--paper);border:1px solid var(--line);border-radius:9px;padding:10px 12px;font:400 .85rem/1.55 var(--mono);overflow-x:auto;margin:0 0 10px;white-space:pre}
+.q p code,.explain code,.opt code{font-family:var(--mono);font-size:.88em;background:var(--accent-soft);padding:0 4px;border-radius:4px}
+@media (max-width:480px){.stats{grid-template-columns:1fr 1fr 1fr}.stat b{font-size:1.25rem}article.text{padding:18px 16px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <h1>Caderno <span>de Estudos</span></h1>
+    <div class="today" id="todayLabel"></div>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button role="tab" id="tab-ingles" aria-selected="true" data-view="ingles">Inglês</button>
+    <button role="tab" id="tab-estudo" aria-selected="false" data-view="estudo">Estudo</button>
+    <button role="tab" id="tab-dev" aria-selected="false" data-view="dev">Dev</button>
+  </nav>
+
+  <!-- INGLÊS -->
+  <section id="view-ingles">
+    <p class="eyebrow">Leitura e compreensão</p>
+    <h2>Leia o texto e responda</h2>
+    <p class="hint">Clique em qualquer frase para ver a tradução. Clique de novo para esconder.</p>
+    <div class="chips" id="textChips"></div>
+    <article class="text" id="textBox"></article>
+    <div class="quiz" id="textQuiz"></div>
+  </section>
+
+  <!-- ESTUDO -->
+  <section id="view-estudo" hidden>
+    <p class="eyebrow">Sessão diária</p>
+    <h2>Uma hora por dia</h2>
+    <p class="hint">O dia só fica marcado quando o cronômetro de 60 minutos chega a zero. Pausar é permitido; reiniciar volta para 60:00.</p>
+    <div class="clock">
+      <div class="ring">
+        <svg viewBox="0 0 100 100" aria-hidden="true">
+          <circle cx="50" cy="50" r="45" fill="none" stroke="var(--line)" stroke-width="6"></circle>
+          <circle id="ringBar" cx="50" cy="50" r="45" fill="none" stroke="var(--accent)" stroke-width="6" stroke-linecap="round" stroke-dasharray="282.74" stroke-dashoffset="0"></circle>
+        </svg>
+        <div class="time"><div><span id="timeText">60:00</span><small id="timeSub">pronto para começar</small></div></div>
+      </div>
+      <div class="controls">
+        <button class="btn" id="startBtn">Iniciar</button>
+        <button class="btn ghost" id="resetBtn">Reiniciar</button>
+      </div>
+      <div class="status" id="studyStatus"></div>
+    </div>
+    <div class="stats">
+      <div class="stat"><b id="stStreak">0</b><span>dias seguidos</span></div>
+      <div class="stat"><b id="stMonth">0</b><span>dias neste mês</span></div>
+      <div class="stat"><b id="stTotal">0</b><span>horas no total</span></div>
+    </div>
+    <div class="cal">
+      <div class="calhead">
+        <button id="prevM" aria-label="Mês anterior">‹</button>
+        <strong id="calTitle"></strong>
+        <button id="nextM" aria-label="Próximo mês">›</button>
+      </div>
+      <div class="grid" id="calGrid"></div>
+      <div class="legend">
+        <span><i style="background:var(--grad)"></i>hora completa</span>
+        <span><i style="background:var(--bad-soft);border:1px solid var(--bad)"></i>dia sem estudo</span>
+        <span><i style="outline:2px solid var(--accent);outline-offset:-2px"></i>hoje</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- DEV -->
+  <section id="view-dev" hidden>
+    <p class="eyebrow">Programação</p>
+    <h2>Escolha uma linguagem</h2>
+    <p class="hint">Perguntas de múltipla escolha com explicação. Seu melhor resultado em cada linguagem fica salvo.</p>
+    <div class="chips" id="langChips"></div>
+    <div class="quiz" id="devQuiz" style="margin-top:0"></div>
+  </section>
+</div>
+
+<script>
+/* ---------- storage ---------- */
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+};
+const $ = s => document.querySelector(s);
+const esc = s => s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmt = s => esc(s).replace(/`([^`]+)`/g, '<code>$1</code>');
+const dayKey = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+
+$('#todayLabel').textContent = new Date().toLocaleDateString('pt-BR', {weekday:'long', day:'numeric', month:'long'});
+
+/* ---------- tabs ---------- */
+const views = ['ingles','estudo','dev'];
+function show(v){
+  if(!views.includes(v)) v = 'ingles';
+  views.forEach(x => { $('#view-'+x).hidden = x !== v; $('#tab-'+x).setAttribute('aria-selected', x === v); });
+  store.set('tab', v);
+}
+document.querySelectorAll('nav.tabs button').forEach(b => b.onclick = () => show(b.dataset.view));
+show(location.hash.slice(1) || store.get('tab','ingles'));
+
+/* ---------- reusable quiz renderer ---------- */
+function renderQuiz(box, questions, onFinish){
+  box.innerHTML = '';
+  let answered = 0, right = 0;
+  const score = document.createElement('div');
+  score.className = 'score';
+  const update = () => score.innerHTML = `<span>Acertos: <span class="num">${right}/${questions.length}</span></span>` +
+    (answered === questions.length ? `<button class="btn ghost" type="button">Refazer</button>` : `<span class="num" style="color:var(--muted);font-weight:400">${questions.length-answered} restantes</span>`);
+  questions.forEach((q, i) => {
+    const el = document.createElement('div');
+    el.className = 'q';
+    el.innerHTML = `<p><span class="n">${String(i+1).padStart(2,'0')}</span>${fmt(q.q)}</p>` +
+      (q.code ? `<pre class="code">${esc(q.code)}</pre>` : '') +
+      `<div class="opts">${q.o.map((o,j) => `<button class="opt" type="button" data-j="${j}">${fmt(o)}</button>`).join('')}</div>`;
+    el.querySelectorAll('.opt').forEach(btn => btn.onclick = () => {
+      const j = +btn.dataset.j;
+      el.querySelectorAll('.opt').forEach((b,k) => { b.disabled = true; if(k === q.a) b.classList.add('right'); });
+      if(j !== q.a) btn.classList.add('wrong'); else right++;
+      answered++;
+      if(q.e){ const ex = document.createElement('div'); ex.className = 'explain'; ex.innerHTML = fmt(q.e); el.appendChild(ex); }
+      update();
+      if(answered === questions.length && onFinish) onFinish(right, questions.length);
+    });
+    box.appendChild(el);
+  });
+  update();
+  score.addEventListener('click', e => { if(e.target.tagName === 'BUTTON') renderQuiz(box, questions, onFinish); });
+  box.appendChild(score);
+}
+
+/* ---------- INGLÊS ---------- */
+const TEXTS = [
+  { title:"A Morning at the Market", level:"A2 · básico", s:[
+    ["Every Saturday, Ana walks to the farmers' market near her house.","Todo sábado, Ana caminha até a feira perto da casa dela."],
+    ["She likes to arrive early, before the crowds.","Ela gosta de chegar cedo, antes da multidão."],
+    ["Her favorite stall sells fresh bread and homemade jam.","A barraca favorita dela vende pão fresco e geleia caseira."],
+    ["The owner, Mr. Silva, always gives her a small piece of cake for free.","O dono, o Sr. Silva, sempre dá a ela um pedacinho de bolo de graça."],
+    ["Today, however, the stall is closed because Mr. Silva is sick.","Hoje, porém, a barraca está fechada porque o Sr. Silva está doente."],
+    ["Ana buys some flowers and decides to visit him in the afternoon.","Ana compra algumas flores e decide visitá-lo à tarde."]
+  ], q:[
+    {q:"How often does Ana go to the market?", o:["Every day","Every Saturday","Every Sunday","Once a month"], a:1},
+    {q:"Why does Ana arrive early?", o:["To get the cheapest bread","To meet her friends","To avoid the crowds","Because the market closes early"], a:2},
+    {q:"Why is the stall closed today?", o:["Mr. Silva is on vacation","It is a holiday","Mr. Silva is sick","The bread sold out"], a:2},
+    {q:"What does Ana decide to do?", o:["Go home and sleep","Buy flowers and visit Mr. Silva","Bake her own cake","Find a new stall"], a:1}
+  ]},
+  { title:"Working From Home", level:"B1 · intermediário", s:[
+    ["Since the pandemic, many companies have allowed their employees to work from home.","Desde a pandemia, muitas empresas permitiram que seus funcionários trabalhassem de casa."],
+    ["For some people, this change has been a huge improvement.","Para algumas pessoas, essa mudança foi uma grande melhoria."],
+    ["They no longer waste hours in traffic and can spend more time with their families.","Elas não perdem mais horas no trânsito e podem passar mais tempo com suas famílias."],
+    ["Others, however, feel lonely and find it hard to separate work from personal life.","Outras, no entanto, se sentem sozinhas e acham difícil separar o trabalho da vida pessoal."],
+    ["Experts recommend creating a fixed routine and a dedicated workspace.","Especialistas recomendam criar uma rotina fixa e um espaço de trabalho dedicado."],
+    ["Taking short breaks and going outside during the day can also help a lot.","Fazer pausas curtas e sair de casa durante o dia também pode ajudar muito."]
+  ], q:[
+    {q:"What has changed since the pandemic?", o:["Companies closed their offices forever","Many employees can work from home","People work more hours","Traffic got worse"], a:1},
+    {q:"Which is an advantage mentioned in the text?", o:["Higher salaries","Less time in traffic","More meetings","Free lunch"], a:1},
+    {q:"What problem do some people face?", o:["They feel lonely","Their internet is slow","They earn less","They have to travel more"], a:0},
+    {q:"The word \"however\" in sentence 4 shows…", o:["an example","a contrast","a conclusion","a time sequence"], a:1, e:"\"However\" = porém / no entanto. Introduz uma ideia contrária à anterior."}
+  ]},
+  { title:"The Science of Sleep", level:"B2 · avançado", s:[
+    ["Although we spend roughly a third of our lives asleep, scientists still don't fully understand why we need it.","Embora passemos cerca de um terço da vida dormindo, os cientistas ainda não entendem completamente por que precisamos disso."],
+    ["What is clear is that sleep plays a crucial role in memory and learning.","O que está claro é que o sono tem um papel crucial na memória e no aprendizado."],
+    ["During deep sleep, the brain replays the day's experiences and strengthens important connections.","Durante o sono profundo, o cérebro repassa as experiências do dia e fortalece conexões importantes."],
+    ["People who are sleep-deprived tend to make poorer decisions and are more likely to get sick.","Pessoas privadas de sono tendem a tomar decisões piores e têm mais chance de ficar doentes."],
+    ["Most adults need between seven and nine hours per night, yet many get far less.","A maioria dos adultos precisa de sete a nove horas por noite, mas muitos dormem bem menos."],
+    ["Turning off screens an hour before bed is one of the simplest ways to sleep better.","Desligar as telas uma hora antes de dormir é uma das formas mais simples de dormir melhor."]
+  ], q:[
+    {q:"According to the text, scientists…", o:["fully understand why we sleep","don't completely know why we need sleep","think sleep is not important","say we sleep half of our lives"], a:1},
+    {q:"What happens during deep sleep?", o:["The brain stops working","The brain replays experiences and strengthens connections","We forget everything from the day","We dream about the future"], a:1},
+    {q:"\"Sleep-deprived\" means…", o:["sleeping too much","not getting enough sleep","sleeping during the day","dreaming a lot"], a:1},
+    {q:"Which tip does the text give?", o:["Drink coffee at night","Sleep only five hours","Turn off screens an hour before bed","Exercise right before sleeping"], a:2}
+  ]}
+];
+let textIdx = Math.min(store.get('textIdx',0), TEXTS.length-1);
+function renderTextChips(){
+  const done = store.get('textScores', {});
+  $('#textChips').innerHTML = TEXTS.map((t,i) =>
+    `<button class="chip" type="button" aria-pressed="${i===textIdx}" data-i="${i}">${esc(t.title)}${done[i]!=null ? `<small>${done[i]}/${t.q.length}</small>` : ''}</button>`).join('');
+  $('#textChips').querySelectorAll('.chip').forEach(c => c.onclick = () => { textIdx = +c.dataset.i; store.set('textIdx', textIdx); renderText(); });
+}
+function renderText(){
+  const t = TEXTS[textIdx];
+  renderTextChips();
+  $('#textBox').innerHTML = `<span class="level">${t.level}</span><h3>${esc(t.title)}</h3><div class="passage">${
+    t.s.map((s,i) => `<span class="s" tabindex="0" role="button" data-i="${i}">${esc(s[0])}</span> `).join('')}</div>`;
+  $('#textBox').querySelectorAll('.s').forEach(el => {
+    const toggle = () => {
+      const next = el.nextElementSibling;
+      if(next && next.classList.contains('tr')){ next.remove(); el.classList.remove('on'); return; }
+      const tr = document.createElement('span');
+      tr.className = 'tr';
+      tr.innerHTML = `<b>Tradução</b>${esc(t.s[+el.dataset.i][1])}`;
+      el.after(tr); el.classList.add('on');
+    };
+    el.onclick = toggle;
+    el.onkeydown = e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); toggle(); } };
+  });
+  renderQuiz($('#textQuiz'), t.q, (r) => { const sc = store.get('textScores',{}); sc[textIdx] = Math.max(sc[textIdx]||0, r); store.set('textScores', sc); renderTextChips(); });
+}
+renderText();
+
+/* ---------- ESTUDO (timer + calendar) ---------- */
+const TOTAL = 60*60*1000;
+const C = 2*Math.PI*45;
+let timer = store.get('timer', {remaining: TOTAL, endAt: null}); // endAt set while running
+let tick = null;
+let calMonth = new Date(); calMonth.setDate(1);
+const days = () => store.get('studyDays', {}); // { 'YYYY-MM-DD': true }
+
+function remaining(){ return timer.endAt ? Math.max(0, timer.endAt - Date.now()) : timer.remaining; }
+function paint(){
+  const r = remaining();
+  const sec = Math.ceil(r/1000);
+  $('#timeText').textContent = `${String(Math.floor(sec/60)).padStart(2,'0')}:${String(sec%60).padStart(2,'0')}`;
+  $('#ringBar').setAttribute('stroke-dashoffset', (C * (1 - r/TOTAL)).toFixed(2));
+  const running = !!timer.endAt;
+  $('#startBtn').textContent = running ? 'Pausar' : (r < TOTAL ? 'Continuar' : 'Iniciar');
+  $('#timeSub').textContent = running ? 'estudando…' : (r < TOTAL ? 'pausado' : 'pronto para começar');
+  const doneToday = !!days()[dayKey(new Date())];
+  const st = $('#studyStatus');
+  st.className = 'status' + (doneToday ? ' done' : '');
+  st.textContent = doneToday ? 'Hoje já está marcado como concluído. Bom trabalho!' : 'Hoje ainda não foi concluído.';
+  if(running && r === 0) finish();
+}
+function finish(){
+  timer = {remaining: TOTAL, endAt: null}; store.set('timer', timer);
+  clearInterval(tick); tick = null;
+  const d = days(); d[dayKey(new Date())] = true; store.set('studyDays', d);
+  paint(); renderCal();
+  $('#timeSub').textContent = 'hora concluída!';
+}
+function run(){ clearInterval(tick); tick = setInterval(paint, 250); }
+$('#startBtn').onclick = () => {
+  if(timer.endAt){ timer = {remaining: remaining(), endAt: null}; clearInterval(tick); tick = null; }
+  else { timer = {remaining: timer.remaining, endAt: Date.now() + timer.remaining}; run(); }
+  store.set('timer', timer); paint();
+};
+$('#resetBtn').onclick = () => { timer = {remaining: TOTAL, endAt: null}; store.set('timer', timer); clearInterval(tick); tick = null; paint(); };
+
+function streak(d){
+  let n = 0; const c = new Date();
+  if(!d[dayKey(c)]) c.setDate(c.getDate()-1); // today not done yet doesn't break the streak
+  while(d[dayKey(c)]){ n++; c.setDate(c.getDate()-1); }
+  return n;
+}
+function renderCal(){
+  const d = days(), y = calMonth.getFullYear(), m = calMonth.getMonth();
+  const today = new Date(); today.setHours(0,0,0,0);
+  $('#calTitle').textContent = calMonth.toLocaleDateString('pt-BR', {month:'long', year:'numeric'});
+  const first = new Date(y, m, 1).getDay(), n = new Date(y, m+1, 0).getDate();
+  let html = ['D','S','T','Q','Q','S','S'].map(x => `<div class="dow">${x}</div>`).join('');
+  for(let i=0;i<first;i++) html += '<div class="day empty"></div>';
+  const firstEver = Object.keys(d).sort()[0];
+  for(let i=1;i<=n;i++){
+    const dt = new Date(y, m, i), k = dayKey(dt);
+    let cls = 'day';
+    if(d[k]) cls += ' ok';
+    else if(dt < today && firstEver && k > firstEver) cls += ' miss';
+    if(dt.getTime() === today.getTime()) cls += ' is-today';
+    html += `<div class="${cls}" title="${k}${d[k] ? ' · concluído' : ''}">${i}</div>`;
+  }
+  $('#calGrid').innerHTML = html;
+  const keys = Object.keys(d).filter(k => d[k]);
+  const ym = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}`;
+  $('#stStreak').textContent = streak(d);
+  $('#stMonth').textContent = keys.filter(k => k.startsWith(ym)).length;
+  $('#stTotal').textContent = keys.length;
+}
+$('#prevM').onclick = () => { calMonth.setMonth(calMonth.getMonth()-1); renderCal(); };
+$('#nextM').onclick = () => { calMonth.setMonth(calMonth.getMonth()+1); renderCal(); };
+if(timer.endAt) run();
+paint(); renderCal();
+
+/* ---------- DEV ---------- */
+const LANGS = {
+  "JavaScript":[
+    {q:"Qual é o resultado de `typeof null`?", o:["\"null\"","\"object\"","\"undefined\"","\"number\""], a:1, e:"É um bug histórico da linguagem: `typeof null` retorna `\"object\"`."},
+    {q:"O que este código imprime?", code:"console.log(1 + '2' + 3);", o:["6","\"123\"","\"15\"","Erro"], a:1, e:"Ao somar número com string, o JS concatena: `'12'` e depois `'123'`."},
+    {q:"Qual a diferença entre `==` e `===`?", o:["Nenhuma","`===` compara valor e tipo; `==` converte tipos antes","`==` é mais rápido e mais seguro","`===` só funciona com números"], a:1},
+    {q:"Qual palavra-chave declara uma variável que não pode ser reatribuída?", o:["var","let","const","static"], a:2},
+    {q:"O que `[1, 2, 3].map(x => x * 2)` retorna?", o:["[1, 2, 3]","[2, 4, 6]","12","undefined"], a:1}
+  ],
+  "Python":[
+    {q:"Como se cria uma lista em Python?", o:["`(1, 2, 3)`","`{1, 2, 3}`","`[1, 2, 3]`","`<1, 2, 3>`"], a:2, e:"Parênteses criam tupla e chaves criam set (ou dict)."},
+    {q:"O que este código imprime?", code:"nums = [1, 2, 3, 4]\nprint(nums[-1])", o:["1","4","Erro","-1"], a:1, e:"Índices negativos contam a partir do fim."},
+    {q:"Qual destes tipos é imutável?", o:["list","dict","set","tuple"], a:3},
+    {q:"Qual o resultado de `7 // 2`?", o:["3.5","3","4","1"], a:1, e:"`//` é a divisão inteira (arredonda para baixo)."},
+    {q:"O que este código imprime?", code:"print([x**2 for x in range(3)])", o:["[1, 4, 9]","[0, 1, 4]","[0, 1, 2]","[2, 4, 6]"], a:1, e:"`range(3)` gera 0, 1 e 2."}
+  ],
+  "Java":[
+    {q:"Qual é o ponto de entrada de um programa Java?", o:["`start()`","`public static void main(String[] args)`","`init()`","`run()`"], a:1},
+    {q:"Qual destes é um tipo primitivo?", o:["String","Integer","int","ArrayList"], a:2},
+    {q:"Como se compara o conteúdo de duas Strings corretamente?", o:["`a == b`","`a.equals(b)`","`a = b`","`a.compare(b)`"], a:1, e:"`==` compara referências; `equals` compara o conteúdo."},
+    {q:"Qual palavra-chave impede que uma classe seja herdada?", o:["static","private","final","abstract"], a:2},
+    {q:"O que este código imprime?", code:"int x = 5;\nSystem.out.println(x++ + ++x);", o:["11","12","10","13"], a:1, e:"`x++` vale 5 (x vira 6), depois `++x` vale 7. 5 + 7 = 12."}
+  ],
+  "C":[
+    {q:"Qual função imprime texto formatado na tela?", o:["`print()`","`echo()`","`printf()`","`cout`"], a:2},
+    {q:"O que `&x` representa?", o:["O valor de x","O endereço de memória de x","x ao quadrado","Um erro"], a:1},
+    {q:"Qual função libera memória alocada com `malloc`?", o:["`delete`","`free()`","`release()`","`dispose()`"], a:1},
+    {q:"Como as strings terminam em C?", o:["Com `\\n`","Com o caractere nulo `\\0`","Com `;`","Não têm terminador"], a:1},
+    {q:"O que este código imprime?", code:"int a[] = {10, 20, 30};\nprintf(\"%d\", *(a + 1));", o:["10","20","30","Endereço de memória"], a:1, e:"`*(a + 1)` é o mesmo que `a[1]`."}
+  ],
+  "SQL":[
+    {q:"Qual comando busca dados de uma tabela?", o:["GET","SELECT","FETCH","READ"], a:1},
+    {q:"Qual cláusula filtra linhas?", o:["ORDER BY","GROUP BY","WHERE","HAVING"], a:2},
+    {q:"Qual a diferença entre WHERE e HAVING?", o:["Nenhuma","HAVING filtra depois do agrupamento (GROUP BY)","WHERE só funciona com números","HAVING ordena os resultados"], a:1},
+    {q:"Qual JOIN retorna só as linhas que existem nas duas tabelas?", o:["LEFT JOIN","RIGHT JOIN","INNER JOIN","FULL JOIN"], a:2},
+    {q:"O que esta consulta retorna?", code:"SELECT COUNT(*) FROM alunos WHERE idade >= 18;", o:["A lista de alunos maiores de idade","A quantidade de alunos com 18 anos ou mais","A soma das idades","A idade média"], a:1}
+  ],
+  "HTML/CSS":[
+    {q:"Qual tag cria um link?", o:["`<link>`","`<a>`","`<href>`","`<url>`"], a:1, e:"`<link>` serve para carregar recursos como CSS, não para links clicáveis."},
+    {q:"Qual propriedade CSS muda a cor do texto?", o:["font-color","text-color","color","background"], a:2},
+    {q:"Qual seletor pega um elemento pelo id \"menu\"?", o:["`.menu`","`#menu`","`menu`","`*menu`"], a:1},
+    {q:"Com `display: flex`, qual propriedade alinha os itens no eixo principal?", o:["align-items","justify-content","flex-wrap","text-align"], a:1},
+    {q:"No box model, qual é a ordem de dentro para fora?", o:["margin, border, padding, content","content, padding, border, margin","content, margin, padding, border","padding, content, border, margin"], a:1}
+  ],
+  "TypeScript":[
+    {q:"Qual a principal vantagem do TypeScript sobre o JavaScript?", o:["Roda mais rápido no navegador","Tipagem estática verificada antes de executar","Não precisa de compilação","Substitui o HTML"], a:1},
+    {q:"Como declarar uma variável do tipo número?", o:["`let x: number = 5`","`let x = number(5)`","`number x = 5`","`let x<number> = 5`"], a:0},
+    {q:"O que `string | null` significa?", o:["Uma string concatenada com null","Um tipo união: pode ser string ou null","Um erro de sintaxe","Uma string opcional obrigatória"], a:1},
+    {q:"Qual a diferença entre `any` e `unknown`?", o:["São iguais","`unknown` exige verificação de tipo antes do uso; `any` desliga a checagem","`any` é mais seguro","`unknown` só aceita números"], a:1},
+    {q:"O que `interface User { name: string; age?: number }` indica sobre `age`?", o:["É obrigatória","É opcional","É sempre null","É somente leitura"], a:1}
+  ],
+  "Go":[
+    {q:"Como se declara e atribui uma variável de forma curta?", o:["`var x = 5`","`x := 5`","`let x = 5`","`x = 5`"], a:1},
+    {q:"Qual palavra-chave inicia uma goroutine?", o:["async","thread","go","spawn"], a:2},
+    {q:"Como Go costuma tratar erros?", o:["try/catch","Retornando um valor `error` junto com o resultado","Exceções globais","Não trata erros"], a:1},
+    {q:"Qual é o único laço de repetição em Go?", o:["while","for","loop","foreach"], a:1},
+    {q:"O que `defer` faz?", o:["Pausa o programa","Adia a execução da função até o fim da função atual","Cria uma thread","Ignora erros"], a:1}
+  ]
+};
+let lang = LANGS[store.get('lang')] ? store.get('lang') : 'JavaScript';
+function renderLangs(){
+  const best = store.get('langBest', {});
+  $('#langChips').innerHTML = Object.keys(LANGS).map(l =>
+    `<button class="chip" type="button" aria-pressed="${l===lang}" data-l="${esc(l)}">${esc(l)}${best[l]!=null ? `<small>${best[l]}/${LANGS[l].length}</small>` : ''}</button>`).join('');
+  $('#langChips').querySelectorAll('.chip').forEach(c => c.onclick = () => { lang = c.dataset.l; store.set('lang', lang); renderDev(); });
+}
+function renderDev(){
+  renderLangs();
+  renderQuiz($('#devQuiz'), LANGS[lang], r => { const b = store.get('langBest',{}); b[lang] = Math.max(b[lang]||0, r); store.set('langBest', b); renderLangs(); });
+}
+renderDev();
+</script>
+</body>
+</html>
